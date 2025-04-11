@@ -356,32 +356,47 @@ export async function POST(request: NextRequest) {
     if (process.env.NODE_ENV === "production") {
       console.log("Running in production environment");
 
-      // Load fonts for emojis and other special characters
-      await chromium.font(
-        "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
-      );
+      try {
+        // Load fonts for emojis and other special characters
+        await chromium.font(
+          "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
+        );
 
-      // Get executable path with defined temp directory for Vercel
-      const executablePath = await chromium.executablePath("/tmp/chromium");
+        console.log("Downloading Chromium binary...");
+        // Use URL directly to Chromium tarball instead of relying on local /tmp directory
+        const executablePath = await chromium.executablePath(
+          "https://github.com/Sparticuz/chromium/releases/download/v133.0.0/chromium-v133.0.0-pack.tar"
+        );
+        console.log("Chromium binary download complete.");
 
-      // Launch browser with optimized settings
-      browser = await puppeteer.launch({
-        args: [
-          ...chromium.args,
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-          "--disable-setuid-sandbox",
-          "--no-first-run",
-          "--no-sandbox",
-          "--no-zygote",
-          "--deterministic-fetch",
-          "--disable-features=IsolateOrigins",
-          "--disable-site-isolation-trials",
-        ],
-        defaultViewport: chromium.defaultViewport,
-        executablePath,
-        headless: chromium.headless,
-      });
+        // Launch browser with optimized settings
+        browser = await puppeteer.launch({
+          args: [
+            ...chromium.args,
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+            "--disable-setuid-sandbox",
+            "--no-first-run",
+            "--no-sandbox",
+            "--no-zygote",
+            "--deterministic-fetch",
+            "--disable-features=IsolateOrigins",
+            "--disable-site-isolation-trials",
+          ],
+          defaultViewport: chromium.defaultViewport,
+          executablePath,
+          headless: chromium.headless,
+        });
+      } catch (browserError) {
+        console.error("Error setting up Chromium:", browserError);
+        throw new Error(
+          `Chromium setup failed: ${
+            browserError instanceof Error
+              ? browserError.message
+              : String(browserError)
+          }`
+        );
+      }
     } else {
       // Local Development Environment
       console.log("Running in development environment");

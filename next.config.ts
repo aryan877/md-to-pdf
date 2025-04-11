@@ -19,7 +19,7 @@ const nextConfig = {
     // Specific configuration for our PDF route
     "api/pdf/route": {
       memory: 3008, // Maximum memory size in MB
-      maxDuration: 60, // Maximum execution time in seconds
+      maxDuration: 90, // Maximum execution time in seconds
     },
   },
 };
