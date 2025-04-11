@@ -1,9 +1,10 @@
+import chromium from "@sparticuz/chromium-min";
 import { marked } from "marked";
 import { gfmHeadingId } from "marked-gfm-heading-id";
 import { markedHighlight } from "marked-highlight";
 import { NextRequest, NextResponse } from "next/server";
 import Prism from "prismjs";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 
 export async function POST(request: NextRequest) {
   try {
@@ -344,11 +345,26 @@ export async function POST(request: NextRequest) {
       </html>
     `;
 
-    // Launch headless browser
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox"],
-    });
+    // Launch headless browser with Vercel-compatible configuration
+    let browser;
+
+    if (process.env.NODE_ENV === "production") {
+      // Use chromium in production (Vercel)
+      browser = await puppeteer.launch({
+        args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: true,
+        ignoreDefaultArgs: ["--disable-extensions"],
+      });
+    } else {
+      // Use regular configuration for local development
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ["--no-sandbox"],
+        ignoreDefaultArgs: ["--disable-extensions"],
+      });
+    }
 
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
