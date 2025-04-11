@@ -22,7 +22,7 @@ const nextConfig = {
   functions: {
     // Specific configuration for our PDF route
     "api/pdf/route": {
-      memory: 3008, // Maximum memory size in MB
+      memory: 1024, // Maximum memory size in MB for Hobby plan
       maxDuration: 60, // Maximum execution time in seconds
     },
   },
