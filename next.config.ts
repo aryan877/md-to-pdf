@@ -5,7 +5,7 @@ const nextConfig = {
   // Add custom headers to increase function timeout
   serverRuntimeConfig: {
     // Use a larger API timeout for PDF generation
-    apiTimeout: 60, // in seconds
+    apiTimeout: 90, // in seconds
   },
   // Configure Vercel functions to have more memory and timeout
   experimental: {
@@ -13,6 +13,10 @@ const nextConfig = {
       "puppeteer-core",
       "@sparticuz/chromium-min",
     ],
+    // Ensure Chromium binary is included in the deployment
+    outputFileTracingIncludes: {
+      "/api/pdf": ["./node_modules/@sparticuz/chromium-min/**"],
+    },
   },
   // Increase serverless function limits for Vercel
   functions: {

@@ -1,31 +1,51 @@
 // This script pre-downloads the Chromium binary during build time
 // to improve cold start performance in production
-import chromium from "@sparticuz/chromium-min";
+import { execSync } from "child_process";
+import fs from "fs";
+import https from "https";
+import path from "path";
 
-async function prepareChromium() {
-  console.log("🔧 Preparing Chromium binary for production...");
+const CHROMIUM_VERSION = "v133.0.0";
+const CHROMIUM_URL = `https://github.com/Sparticuz/chromium/releases/download/${CHROMIUM_VERSION}/chromium-${CHROMIUM_VERSION}-pack.tar`;
+const CHROMIUM_DIR = path.join(process.cwd(), ".next", "chromium");
 
+async function downloadFile(url, dest) {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(dest);
+    https
+      .get(url, (response) => {
+        response.pipe(file);
+        file.on("finish", () => {
+          file.close();
+          resolve();
+        });
+      })
+      .on("error", (err) => {
+        fs.unlink(dest, () => reject(err));
+      });
+  });
+}
+
+async function main() {
   try {
-    // Define temp directory for Chromium
-    process.env.CHROMIUM_PATH = "/tmp/chromium";
+    console.log("Creating Chromium directory...");
+    fs.mkdirSync(CHROMIUM_DIR, { recursive: true });
 
-    // Download and cache the Chromium binary
-    console.log("📥 Downloading Chromium...");
-    await chromium.font(
-      "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
-    );
-    const executablePath = await chromium.executablePath(
-      "https://github.com/Sparticuz/chromium/releases/download/v133.0.0/chromium-v133.0.0-pack.tar"
-    );
+    const tarPath = path.join(CHROMIUM_DIR, "chromium.tar");
+    console.log(`Downloading Chromium ${CHROMIUM_VERSION}...`);
+    await downloadFile(CHROMIUM_URL, tarPath);
 
-    console.log("✅ Chromium binary preparation completed successfully");
-    console.log(`📁 Executable path: ${executablePath}`);
+    console.log("Extracting Chromium...");
+    execSync(`tar -xf ${tarPath} -C ${CHROMIUM_DIR}`, { stdio: "inherit" });
+
+    console.log("Cleaning up...");
+    fs.unlinkSync(tarPath);
+
+    console.log("Chromium preparation complete!");
   } catch (error) {
-    console.error("❌ Failed to prepare Chromium binary:");
-    console.error(error);
-    // Don't fail the build process
-    console.log("⚠️ Continuing with build despite Chromium preparation error");
+    console.error("Error preparing Chromium:", error);
+    process.exit(1);
   }
 }
 
-prepareChromium();
+main();

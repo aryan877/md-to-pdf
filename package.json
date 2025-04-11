@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "node scripts/prepare-chromium.mjs && next build",
+    "prepare-chromium": "node scripts/prepare-chromium.mjs",
+    "build": "npm run prepare-chromium && next build",
     "start": "next start",
     "lint": "next lint"
   },
