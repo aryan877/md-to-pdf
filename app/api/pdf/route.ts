@@ -6,7 +6,14 @@ import { NextRequest, NextResponse } from "next/server";
 import Prism from "prismjs";
 import puppeteer from "puppeteer-core";
 
+// Set dynamic execution for this route
+export const dynamic = "force-dynamic";
+// Set runtime to edge for better performance
+export const runtime = "nodejs";
+
 export async function POST(request: NextRequest) {
+  let browser = null;
+
   try {
     // Parse request body
     const { markdown } = await request.json();
@@ -345,23 +352,32 @@ export async function POST(request: NextRequest) {
       </html>
     `;
 
-    // Launch headless browser with Vercel-compatible configuration
-    let browser;
-
+    // Improved browser launch with caching and better error handling
     if (process.env.NODE_ENV === "production") {
-      // Vercel Serverless Environment
       console.log("Running in production environment");
 
-      // Use chromium-min with cached binary in /tmp
+      // Load fonts for emojis and other special characters
       await chromium.font(
         "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
       );
 
-      // Get executable path - make sure we're using a string parameter
+      // Get executable path with defined temp directory for Vercel
       const executablePath = await chromium.executablePath("/tmp/chromium");
 
+      // Launch browser with optimized settings
       browser = await puppeteer.launch({
-        args: chromium.args,
+        args: [
+          ...chromium.args,
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+          "--disable-setuid-sandbox",
+          "--no-first-run",
+          "--no-sandbox",
+          "--no-zygote",
+          "--deterministic-fetch",
+          "--disable-features=IsolateOrigins",
+          "--disable-site-isolation-trials",
+        ],
         defaultViewport: chromium.defaultViewport,
         executablePath,
         headless: chromium.headless,
@@ -376,7 +392,15 @@ export async function POST(request: NextRequest) {
     }
 
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Set navigation timeout to prevent long-running processes
+    page.setDefaultNavigationTimeout(30000);
+
+    // Set content with proper waiting strategy
+    await page.setContent(html, {
+      waitUntil: "networkidle0",
+      timeout: 30000,
+    });
 
     // Generate PDF with proper formatting
     const pdf = await page.pdf({
@@ -398,13 +422,12 @@ export async function POST(request: NextRequest) {
       preferCSSPageSize: true,
     });
 
-    await browser.close();
-
     // Return PDF as downloadable response
     return new NextResponse(pdf, {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": 'attachment; filename="markdown-document.pdf"',
+        "Cache-Control": "s-maxage=1, stale-while-revalidate=59",
       },
     });
   } catch (error) {
@@ -414,8 +437,21 @@ export async function POST(request: NextRequest) {
         error: `Failed to generate PDF: ${
           error instanceof Error ? error.message : String(error)
         }`,
+        stack:
+          process.env.NODE_ENV === "development" && error instanceof Error
+            ? error.stack
+            : undefined,
       },
       { status: 500 }
     );
+  } finally {
+    // Ensure browser is always closed to prevent memory leaks
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (closeError) {
+        console.error("Error closing browser:", closeError);
+      }
+    }
   }
 }
