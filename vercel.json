@@ -1,9 +1,0 @@
-{
-  "functions": {
-    "api/pdf/route": {
-      "memory": 1024,
-      "maxDuration": 60
-    }
-  },
-  "crons": []
-}
