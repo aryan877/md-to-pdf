@@ -6,10 +6,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Prism from "prismjs";
 import puppeteer from "puppeteer-core";
 
-// Set chromium executable path cache directory for Vercel
-chromium.setHeadlessMode = true;
-chromium.setGraphicsMode = false;
-
 export async function POST(request: NextRequest) {
   try {
     // Parse request body
@@ -353,30 +349,42 @@ export async function POST(request: NextRequest) {
     let browser;
 
     if (process.env.NODE_ENV === "production") {
-      // Prepare chromium for Vercel
-      await chromium.font(
-        "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
-      );
+      // For Vercel deployment
+      try {
+        // Configure chromium for Vercel
+        await chromium.font(
+          "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
+        );
 
-      // Get chromium executable path
-      const execPath =
-        process.env.CHROME_EXECUTABLE_PATH ||
-        (await chromium.executablePath("/tmp/chromium"));
+        // Launch puppeteer with chromium
+        browser = await puppeteer.launch({
+          args: [
+            ...chromium.args,
+            "--hide-scrollbars",
+            "--disable-web-security",
+          ],
+          defaultViewport: chromium.defaultViewport,
+          executablePath: await chromium.executablePath(), // Do not specify a path
+          headless: true, // Use true instead of deprecated setHeadlessMode
+        });
+      } catch (chromiumError) {
+        console.error("Chromium launch error:", chromiumError);
 
-      // Use chromium in production (Vercel)
-      browser = await puppeteer.launch({
-        args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
-        defaultViewport: chromium.defaultViewport,
-        executablePath: execPath,
-        headless: true,
-        ignoreDefaultArgs: ["--disable-extensions"],
-      });
+        // Fallback to Vercel's provided Chrome if available
+        browser = await puppeteer.launch({
+          args: ["--hide-scrollbars", "--disable-web-security", "--no-sandbox"],
+          executablePath:
+            process.env.CHROME_EXECUTABLE_PATH ||
+            "/opt/homebrew/bin/chromium" ||
+            "/usr/bin/chromium-browser",
+          headless: true,
+        });
+      }
     } else {
       // Use regular configuration for local development
       browser = await puppeteer.launch({
         headless: true,
         args: ["--no-sandbox"],
-        ignoreDefaultArgs: ["--disable-extensions"],
       });
     }
 
