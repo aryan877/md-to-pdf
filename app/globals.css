@@ -233,19 +233,45 @@ body {
 /* Book-style layout styles */
 .editor-container,
 .preview-container {
-  width: 50%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   height: 100%;
   max-height: 100%;
   overflow: hidden;
+  min-width: 0; /* Prevent flex items from overflowing */
+}
+
+/* Responsive layout - stack on small screens */
+@media (max-width: 768px) {
+  .preview-container,
+  .editor-container {
+    display: none; /* Hide both by default */
+    border-right: none;
+    width: 100%;
+    flex: 1;
+  }
+
+  /* Only show the active container based on toggle state */
+  .editor-container:not(.mobile-hidden) {
+    display: flex;
+  }
+
+  .preview-container:not(.mobile-hidden) {
+    display: flex;
+  }
+
+  /* Remove this as we're handling display differently */
+  .mobile-hidden {
+    display: none !important;
+  }
 }
 
 .editor-header,
 .preview-header {
   background-color: rgba(11, 1, 33, 0.8);
   backdrop-filter: blur(10px);
-  padding: 0.85rem 1.5rem;
+  padding: 0.4rem 1rem;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -253,7 +279,7 @@ body {
   top: 0;
   z-index: 10;
   flex-shrink: 0;
-  height: 3.5rem;
+  height: 2.25rem;
 }
 
 .editor-content,
@@ -289,7 +315,16 @@ body {
 @media (min-width: 640px) {
   .editor-header,
   .preview-header {
-    padding: 0.75rem 1.5rem;
+    padding: 0.45rem 1.15rem;
+    height: 2.3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .editor-header,
+  .preview-header {
+    padding: 0.5rem 1.25rem;
+    height: 2.4rem;
   }
 }
 
@@ -363,29 +398,65 @@ body {
 }
 
 /* Custom button styles */
-.btn-primary {
-  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-  color: white;
+.btn-primary,
+.btn-toggle {
   border-radius: 60px;
-  padding: 0.75rem 1.5rem;
   font-weight: 500;
   transition: all 0.3s ease;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  box-shadow: 0 0 36px rgba(89, 29, 221, 0.35), 0 4px 14px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
-  font-size: 0.95rem;
 }
 
-@media (min-width: 640px) {
-  .btn-primary {
-    padding: 0.85rem 2rem;
-    gap: 0.75rem;
-    font-size: 1.05rem;
+/* More compact buttons on mobile */
+@media (max-width: 639px) {
+  .btn-primary,
+  .btn-toggle {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.7rem;
+    gap: 0.25rem;
   }
+
+  .btn-primary svg,
+  .btn-toggle svg {
+    height: 0.9rem;
+    width: 0.9rem;
+  }
+}
+
+/* Smaller buttons on desktop */
+@media (min-width: 640px) {
+  .btn-primary,
+  .btn-toggle {
+    padding: 0.5rem 1.25rem;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  box-shadow: 0 0 36px rgba(89, 29, 221, 0.35), 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+/* Toggle button styling */
+.btn-toggle {
+  background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+  color: white;
+  box-shadow: 0 0 24px rgba(200, 55, 197, 0.35), 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.btn-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(200, 55, 197, 0.55), 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.btn-toggle:active {
+  transform: translateY(1px);
+  box-shadow: 0 0 20px rgba(200, 55, 197, 0.4), 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary:hover {
@@ -462,25 +533,38 @@ body {
 
 @media (min-width: 640px) {
   .logo-container {
-    height: 52px;
-    width: 52px;
-    margin-right: 16px;
+    height: 32px;
+    width: 32px;
+    margin-right: 10px;
   }
 
   .logo-icon span {
-    font-size: 28px;
+    font-size: 18px;
   }
 }
 
 @media (min-width: 768px) {
   .logo-container {
-    height: 60px;
-    width: 60px;
-    margin-right: 20px;
+    height: 36px;
+    width: 36px;
+    margin-right: 12px;
   }
 
   .logo-icon span {
-    font-size: 32px;
+    font-size: 20px;
+  }
+}
+
+/* More compact logo for header */
+@media (max-width: 639px) {
+  .logo-container {
+    height: 24px;
+    width: 24px;
+    margin-right: 6px;
+  }
+
+  .logo-icon span {
+    font-size: 14px;
   }
 }
 
@@ -509,4 +593,60 @@ body {
   border-radius: 12px;
   font-family: monospace;
   letter-spacing: 0.5px;
+}
+
+/* Improved header styling */
+header {
+  padding: 0.25rem 0.75rem !important;
+}
+
+@media (min-width: 640px) {
+  header {
+    padding: 0.35rem 1rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  header {
+    padding: 0.45rem 1.25rem !important;
+  }
+}
+
+/* Adjust button spacing */
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .button-container {
+    gap: 1rem;
+  }
+}
+
+/* Ensure toggle is only visible on mobile */
+.btn-toggle {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .btn-toggle {
+    display: flex;
+  }
+}
+
+/* App title visibility */
+.app-title {
+  display: none;
+  letter-spacing: 0.01em;
+  font-weight: 400;
+  transform: translateY(0);
+}
+
+@media (min-width: 640px) {
+  .app-title {
+    display: block;
+    margin-left: 4px;
+  }
 }

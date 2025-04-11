@@ -52,6 +52,7 @@ export default function Home() {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lineCount, setLineCount] = useState(0);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Update line numbers when markdown changes
   useEffect(() => {
@@ -139,12 +140,12 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-[var(--background)] text-[var(--foreground)] font-[var(--font-montserrat)]">
       {/* Header with gradient background */}
-      <header className="relative py-7 sm:py-8 px-6 sm:px-10 md:px-16 flex-shrink-0">
+      <header className="relative flex-shrink-0">
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] to-[var(--secondary)] opacity-20 backdrop-blur-xl"></div>
 
         {/* Improved decorative elements - positioned differently */}
-        <div className="absolute top-0 right-0 w-48 h-48 -mr-20 -mt-20 bg-[var(--primary)] opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 -ml-20 -mb-20 bg-[var(--secondary)] opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-24 h-24 -mr-12 -mt-12 bg-[var(--primary)] opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 -ml-12 -mb-12 bg-[var(--secondary)] opacity-10 rounded-full blur-3xl"></div>
 
         <div className="relative flex items-center justify-between mx-auto max-w-7xl z-10">
           {/* Logo and title using simple flex layout */}
@@ -156,65 +157,117 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Title */}
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-medium tracking-tight">
+            {/* Title - Hidden on mobile, visible on PC */}
+            <h1 className="app-title hidden sm:block text-[16px] sm:text-[18px] md:text-[20px] font-normal tracking-tight font-[var(--font-inter)] text-white/80">
               PageMinty
             </h1>
           </div>
 
-          <button
-            onClick={generatePDF}
-            disabled={isGeneratingPDF}
-            className="btn-primary ml-4"
-          >
-            {isGeneratingPDF ? (
-              <>
-                <svg
-                  className="animate-spin h-5 w-5 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
+          <div className="button-container">
+            {/* Toggle button - only visible on mobile */}
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className="btn-toggle"
+            >
+              {showPreview ? (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 mr-1 sm:mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                <span className="sm:inline">Processing...</span>
-              </>
-            ) : (
-              <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <span className="sm:inline">Download PDF</span>
-              </>
-            )}
-          </button>
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                  <span>Editor</span>
+                </>
+              ) : (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 mr-1 sm:mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                    />
+                  </svg>
+                  <span>Preview</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={generatePDF}
+              disabled={isGeneratingPDF}
+              className="btn-primary"
+            >
+              {isGeneratingPDF ? (
+                <>
+                  <svg
+                    className="animate-spin h-4 w-4 mr-1 sm:mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 mr-1 sm:mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  <span>PDF</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         {error && (
-          <div className="mt-4 max-w-7xl mx-auto bg-red-900/70 border border-red-500 text-white px-4 py-2 rounded-lg text-sm backdrop-blur-sm">
+          <div className="mt-1 max-w-7xl mx-auto bg-red-900/70 border border-red-500 text-white px-2 py-1 rounded-lg text-xs backdrop-blur-sm">
             Error: {error}
           </div>
         )}
@@ -224,7 +277,11 @@ export default function Home() {
       <div className="flex-grow flex overflow-hidden p-2">
         <div className="flex w-full h-full rounded-xl overflow-hidden shadow-2xl">
           {/* Editor - Left page */}
-          <div className="editor-container border-r border-[var(--border)]">
+          <div
+            className={`editor-container border-r border-[var(--border)] ${
+              showPreview ? "mobile-hidden" : ""
+            }`}
+          >
             <div className="editor-header">
               <div className="w-3 h-3 rounded-full bg-[var(--primary)] mr-3"></div>
               <h3 className="font-medium text-sm text-white/80">Markdown</h3>
@@ -242,7 +299,11 @@ export default function Home() {
           </div>
 
           {/* Preview - Right page */}
-          <div className="preview-container">
+          <div
+            className={`preview-container ${
+              !showPreview ? "mobile-hidden" : ""
+            }`}
+          >
             <div className="preview-header">
               <div className="w-3 h-3 rounded-full bg-[var(--secondary)] mr-3"></div>
               <h3 className="font-medium text-sm text-white/80">Preview</h3>
