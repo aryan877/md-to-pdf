@@ -5,7 +5,7 @@ const nextConfig = {
   // Add custom headers to increase function timeout
   serverRuntimeConfig: {
     // Use a larger API timeout for PDF generation
-    apiTimeout: 90, // in seconds
+    apiTimeout: 60, // in seconds
   },
   // Configure Vercel functions to have more memory and timeout
   experimental: {
@@ -23,7 +23,7 @@ const nextConfig = {
     // Specific configuration for our PDF route
     "api/pdf/route": {
       memory: 3008, // Maximum memory size in MB
-      maxDuration: 90, // Maximum execution time in seconds
+      maxDuration: 60, // Maximum execution time in seconds
     },
   },
 };
