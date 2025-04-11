@@ -1,21 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Output as standalone build for better Vercel compatibility
-  output: "standalone",
-  // Add custom headers to increase function timeout
-  serverRuntimeConfig: {
-    // Use a larger API timeout for PDF generation
-    apiTimeout: 60, // in seconds
-  },
-  // Configure Vercel functions to have more memory and timeout
+  // Optimize for Vercel Hobby plan
   experimental: {
-    serverComponentsExternalPackages: [
-      "puppeteer-core",
-      "@sparticuz/chromium-min",
-    ],
-    // Ensure Chromium binary is included in the deployment
+    // Only include essential packages
+    serverComponentsExternalPackages: ["puppeteer-core"],
+
+    // Only trace necessary files for chromium-min
     outputFileTracingIncludes: {
-      "/api/pdf": ["./node_modules/@sparticuz/chromium-min/**"],
+      "/api/pdf": ["./node_modules/@sparticuz/chromium-min/dist/**"],
     },
   },
 };

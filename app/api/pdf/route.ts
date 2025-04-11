@@ -1,5 +1,5 @@
+import chromium from "@sparticuz/chromium-min";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 import puppeteer from "puppeteer-core";
 import { convertMarkdownToHtml } from "./markdown-to-html";
 
@@ -18,41 +18,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const executablePath = path.join(
-      process.cwd(),
-      ".next",
-      "chromium",
-      "chromium"
-    );
-
-    console.log("Using Chromium at:", executablePath);
-
+    // Launch browser with minimal memory usage
     const browser = await puppeteer.launch({
-      executablePath,
-      headless: true,
       args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
+        ...chromium.args,
         "--disable-dev-shm-usage",
         "--disable-gpu",
-        "--no-first-run",
-        "--no-zygote",
         "--single-process",
+        "--no-zygote",
       ],
+      defaultViewport: { width: 800, height: 600 },
+      executablePath: await chromium.executablePath(
+        "https://github.com/Sparticuz/chromium/releases/download/v121.0.0/chromium-v121.0.0-pack.tar"
+      ),
+      headless: true,
     });
 
     try {
       const page = await browser.newPage();
 
-      // Convert markdown to HTML with styling
-      const html = convertMarkdownToHtml(markdown);
-
-      // Set content and wait for network idle
-      await page.setContent(html, {
-        waitUntil: "networkidle0",
+      // Optimize memory usage by limiting resources
+      await page.setRequestInterception(true);
+      page.on("request", (request) => {
+        // Allow only necessary resources
+        if (
+          ["document", "stylesheet", "font"].includes(request.resourceType())
+        ) {
+          request.continue();
+        } else {
+          request.abort();
+        }
       });
 
-      // Generate PDF with proper margins and format
+      // Convert markdown to HTML
+      const html = convertMarkdownToHtml(markdown);
+
+      // Set content with minimal wait time
+      await page.setContent(html, {
+        waitUntil: "domcontentloaded",
+      });
+
+      // Generate compact PDF
       const pdf = await page.pdf({
         format: "A4",
         margin: {
@@ -62,7 +68,7 @@ export async function POST(request: NextRequest) {
           left: "20mm",
         },
         printBackground: true,
-        preferCSSPageSize: true,
+        omitBackground: false,
       });
 
       return new NextResponse(pdf, {
