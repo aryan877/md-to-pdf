@@ -21,7 +21,7 @@ const nextConfig = {
   // Increase serverless function limits for Vercel
   functions: {
     // Specific configuration for our PDF route
-    "api/pdf/route": {
+    "app/api/pdf/route": {
       memory: 1024, // Maximum memory size in MB for Hobby plan
       maxDuration: 60, // Maximum execution time in seconds
     },
