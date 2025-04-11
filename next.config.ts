@@ -14,6 +14,14 @@ const nextConfig = {
       "@sparticuz/chromium-min",
     ],
   },
+  // Increase serverless function limits for Vercel
+  functions: {
+    // Specific configuration for our PDF route
+    "api/pdf/route": {
+      memory: 3008, // Maximum memory size in MB
+      maxDuration: 60, // Maximum execution time in seconds
+    },
+  },
 };
 
 export default nextConfig;

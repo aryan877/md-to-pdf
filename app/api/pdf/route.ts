@@ -349,39 +349,26 @@ export async function POST(request: NextRequest) {
     let browser;
 
     if (process.env.NODE_ENV === "production") {
-      // For Vercel deployment
-      try {
-        // Configure chromium for Vercel
-        await chromium.font(
-          "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
-        );
+      // Vercel Serverless Environment
+      console.log("Running in production environment");
 
-        // Launch puppeteer with chromium
-        browser = await puppeteer.launch({
-          args: [
-            ...chromium.args,
-            "--hide-scrollbars",
-            "--disable-web-security",
-          ],
-          defaultViewport: chromium.defaultViewport,
-          executablePath: await chromium.executablePath(), // Do not specify a path
-          headless: true, // Use true instead of deprecated setHeadlessMode
-        });
-      } catch (chromiumError) {
-        console.error("Chromium launch error:", chromiumError);
+      // Use chromium-min with cached binary in /tmp
+      await chromium.font(
+        "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
+      );
 
-        // Fallback to Vercel's provided Chrome if available
-        browser = await puppeteer.launch({
-          args: ["--hide-scrollbars", "--disable-web-security", "--no-sandbox"],
-          executablePath:
-            process.env.CHROME_EXECUTABLE_PATH ||
-            "/opt/homebrew/bin/chromium" ||
-            "/usr/bin/chromium-browser",
-          headless: true,
-        });
-      }
+      // Get executable path - make sure we're using a string parameter
+      const executablePath = await chromium.executablePath("/tmp/chromium");
+
+      browser = await puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath,
+        headless: chromium.headless,
+      });
     } else {
-      // Use regular configuration for local development
+      // Local Development Environment
+      console.log("Running in development environment");
       browser = await puppeteer.launch({
         headless: true,
         args: ["--no-sandbox"],
@@ -423,7 +410,11 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("PDF generation error:", error);
     return NextResponse.json(
-      { error: "Failed to generate PDF" },
+      {
+        error: `Failed to generate PDF: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      },
       { status: 500 }
     );
   }
