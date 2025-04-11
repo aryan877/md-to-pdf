@@ -64,7 +64,8 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   manifest: "/manifest.json",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  viewport:
+    "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover",
   robots: {
     index: true,
     follow: true,

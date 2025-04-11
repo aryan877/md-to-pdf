@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Enable viewport-aware padding for devices with notches and home indicators */
+@supports (padding: max(0px)) {
+  body,
+  .pb-safe {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+}
+
 :root {
   --background: #0b0121;
   --foreground: #ececec;
@@ -292,6 +300,7 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--primary) rgba(0, 0, 0, 0.2);
   -webkit-overflow-scrolling: touch;
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
 .editor-content::-webkit-scrollbar,
@@ -384,12 +393,17 @@ body {
   max-width: 100%;
   margin: 0 auto;
   height: auto;
+  padding-bottom: calc(1.5rem + max(0.5rem, env(safe-area-inset-bottom)));
 }
 
 @media (min-width: 640px) {
   .editor-content textarea,
   .preview-wrapper {
     padding: 2rem;
+  }
+
+  .preview-wrapper {
+    padding-bottom: calc(2rem + max(0.5rem, env(safe-area-inset-bottom)));
   }
 
   .line-numbers {

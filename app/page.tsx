@@ -138,7 +138,7 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden bg-[var(--background)] text-[var(--foreground)] font-[var(--font-montserrat)]">
+    <div className="h-screen w-screen flex flex-col overflow-hidden bg-[var(--background)] text-[var(--foreground)] font-[var(--font-montserrat)] pb-safe">
       {/* Header with gradient background */}
       <header className="relative flex-shrink-0">
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] to-[var(--secondary)] opacity-20 backdrop-blur-xl"></div>
