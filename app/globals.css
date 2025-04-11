@@ -414,7 +414,7 @@ body {
     0 0 40px rgba(200, 55, 197, 0.25), inset 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
-/* Improved logo styles */
+/* Logo styles */
 .logo-container {
   position: relative;
   height: 44px;
@@ -422,6 +422,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-right: 12px;
 }
 
 .logo-icon {
@@ -463,6 +464,7 @@ body {
   .logo-container {
     height: 52px;
     width: 52px;
+    margin-right: 16px;
   }
 
   .logo-icon span {
@@ -474,6 +476,7 @@ body {
   .logo-container {
     height: 60px;
     width: 60px;
+    margin-right: 20px;
   }
 
   .logo-icon span {

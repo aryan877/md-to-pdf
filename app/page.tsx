@@ -139,7 +139,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-[var(--background)] text-[var(--foreground)] font-[var(--font-montserrat)]">
       {/* Header with gradient background */}
-      <header className="relative py-6 sm:py-7 px-6 sm:px-8 md:px-16 flex-shrink-0">
+      <header className="relative py-7 sm:py-8 px-6 sm:px-10 md:px-16 flex-shrink-0">
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary-dark)] to-[var(--secondary)] opacity-20 backdrop-blur-xl"></div>
 
         {/* Improved decorative elements - positioned differently */}
@@ -147,15 +147,18 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 w-48 h-48 -ml-20 -mb-20 bg-[var(--secondary)] opacity-10 rounded-full blur-3xl"></div>
 
         <div className="relative flex items-center justify-between mx-auto max-w-7xl z-10">
-          <div className="flex items-center gap-3 sm:gap-5">
-            {/* Improved logo design */}
+          {/* Logo and title using simple flex layout */}
+          <div className="flex items-center">
+            {/* Logo */}
             <div className="logo-container">
               <div className="logo-icon">
-                <span>M</span>
+                <span>P</span>
               </div>
             </div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-medium tracking-tight ml-2 sm:ml-3 md:ml-4">
-              Markdown to PDF
+
+            {/* Title */}
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-medium tracking-tight">
+              PageMinty
             </h1>
           </div>
 
@@ -167,7 +170,7 @@ export default function Home() {
             {isGeneratingPDF ? (
               <>
                 <svg
-                  className="animate-spin h-5 w-5"
+                  className="animate-spin h-5 w-5 mr-2"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -186,13 +189,13 @@ export default function Home() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                <span className="sm:inline">Generating...</span>
+                <span className="sm:inline">Processing...</span>
               </>
             ) : (
               <>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
+                  className="h-5 w-5 mr-2"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -217,9 +220,9 @@ export default function Home() {
         )}
       </header>
 
-      {/* Main editor & preview area - book style */}
-      <div className="flex-grow flex overflow-hidden">
-        <div className="flex w-full h-full">
+      {/* Main editor & preview area with increased spacing */}
+      <div className="flex-grow flex overflow-hidden p-2">
+        <div className="flex w-full h-full rounded-xl overflow-hidden shadow-2xl">
           {/* Editor - Left page */}
           <div className="editor-container border-r border-[var(--border)]">
             <div className="editor-header">
