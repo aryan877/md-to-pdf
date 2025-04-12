@@ -25,44 +25,44 @@ export function convertMarkdownToHtml(markdown: string): string {
           
           body {
             font-family: 'Montserrat', sans-serif;
-            line-height: 1.7;
-            font-size: 11pt;
+            line-height: 1.5;
+            font-size: 10.5pt;
             color: #333;
             background-color: #fff;
-            padding: 30px;
+            padding: 20px;
             max-width: 750px;
             margin: 0 auto;
           }
           
           h1, h2, h3, h4, h5, h6 {
-            margin-top: 2rem;
-            margin-bottom: 1rem;
+            margin-top: 1.6rem;
+            margin-bottom: 0.8rem;
             font-weight: 500;
-            line-height: 1.3;
+            line-height: 1.2;
             color: #111;
           }
           
           h1 {
-            font-size: 24pt;
-            padding-bottom: 0.5rem;
+            font-size: 22pt;
+            padding-bottom: 0.4rem;
             border-bottom: 2px solid #f0f0f0;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
           }
           
           h2 {
-            font-size: 18pt;
-            padding-bottom: 0.3rem;
+            font-size: 16pt;
+            padding-bottom: 0.25rem;
             border-bottom: 1px solid #f0f0f0;
-            margin-top: 2.5rem;
+            margin-top: 2rem;
           }
           
           h3 {
-            font-size: 14pt;
-            margin-top: 1.8rem;
+            font-size: 13pt;
+            margin-top: 1.5rem;
           }
           
           p, ul, ol {
-            margin-bottom: 1.2rem;
+            margin-bottom: 0.9rem;
             letter-spacing: 0.01rem;
           }
           
@@ -79,27 +79,27 @@ export function convertMarkdownToHtml(markdown: string): string {
           }
           
           ul, ol {
-            padding-left: 1.8rem;
+            padding-left: 1.5rem;
           }
           
           li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
           }
           
           code {
             background-color: #f5f5f5;
             border-radius: 0.25rem;
             font-family: "SFMono-Regular", Consolas, monospace;
-            padding: 0.2rem 0.4rem;
+            padding: 0.15rem 0.3rem;
             font-size: 0.9em;
             color: #476582;
           }
           
           pre {
             background-color: #f8f8f8;
-            border-radius: 0.5rem;
-            padding: 1.2rem;
-            margin: 1.5rem 0;
+            border-radius: 0.4rem;
+            padding: 0.9rem;
+            margin: 1.2rem 0;
             overflow-x: auto;
             border: 1px solid #eee;
           }
@@ -113,8 +113,8 @@ export function convertMarkdownToHtml(markdown: string): string {
           
           blockquote {
             border-left: 4px solid var(--mint);
-            padding: 0.8rem 1.2rem;
-            margin: 1.5rem 0;
+            padding: 0.6rem 1rem;
+            margin: 1.2rem 0;
             background-color: #f9f9f9;
             border-radius: 0 0.4rem 0.4rem 0;
           }
@@ -125,7 +125,7 @@ export function convertMarkdownToHtml(markdown: string): string {
           
           table {
             border-collapse: collapse;
-            margin: 1.5rem 0;
+            margin: 1.2rem 0;
             width: 100%;
             border-radius: 0.4rem;
             overflow: hidden;
@@ -134,7 +134,7 @@ export function convertMarkdownToHtml(markdown: string): string {
           
           table th, table td {
             border: 1px solid #eee;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 0.8rem;
             text-align: left;
           }
           
@@ -149,7 +149,7 @@ export function convertMarkdownToHtml(markdown: string): string {
           
           img {
             max-width: 100%;
-            margin: 1.5rem 0;
+            margin: 1.2rem 0;
             border-radius: 0.4rem;
             box-shadow: 0 1px 5px rgba(0,0,0,0.05);
           }
@@ -158,14 +158,14 @@ export function convertMarkdownToHtml(markdown: string): string {
             border: 0;
             height: 1px;
             background-color: #eee;
-            margin: 2rem 0;
+            margin: 1.5rem 0;
           }
           
           /* PageMinty footer */
           .pageminty-footer {
             text-align: center;
-            margin-top: 3rem;
-            padding-top: 1.5rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
             font-size: 0.8rem;
             color: #888;
             border-top: 1px solid #eee;

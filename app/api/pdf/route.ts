@@ -62,21 +62,21 @@ export async function POST(request: NextRequest) {
       const pdf = await page.pdf({
         format: "A4",
         margin: {
-          top: "25mm",
-          right: "20mm",
-          bottom: "25mm",
-          left: "20mm",
+          top: "20mm",
+          right: "15mm",
+          bottom: "20mm",
+          left: "15mm",
         },
         printBackground: true,
         displayHeaderFooter: true,
         headerTemplate: `
-          <div style="width: 100%; font-size: 8px; font-family: Montserrat, sans-serif; color: #888; padding: 0 20px; display: flex; justify-content: space-between;">
+          <div style="width: 100%; font-size: 7px; font-family: Montserrat, sans-serif; color: #888; padding: 0 15px; display: flex; justify-content: space-between;">
             <div>Generated with PageMinty</div>
             <div>pageminty.xyz</div>
           </div>
         `,
         footerTemplate: `
-          <div style="width: 100%; font-size: 8px; font-family: Montserrat, sans-serif; color: #888; padding: 0 20px; display: flex; justify-content: space-between;">
+          <div style="width: 100%; font-size: 7px; font-family: Montserrat, sans-serif; color: #888; padding: 0 15px; display: flex; justify-content: space-between;">
             <div>PageMinty PDF</div>
             <div><span class="pageNumber"></span> of <span class="totalPages"></span></div>
           </div>
